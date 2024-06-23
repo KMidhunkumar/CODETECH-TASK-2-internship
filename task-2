@@ -1,0 +1,67 @@
+/*To develop an Employee Management System, we need to design and create tables for managing employee records, including personal details, job positions, departments, and salaries.
+We will define the relationships between these entities and write SQL queries to manage the data.*?
+CREATE DATABASE COMPANY;
+USE COMPANY;
+CREATE TABLE Departments (
+    DepartmentID INT PRIMARY KEY ,
+    DepartmentName VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE JobPositions (
+    JobID INT PRIMARY KEY,
+    JobTitle VARCHAR(100) NOT NULL,
+    MinSalary DECIMAL(10, 2),
+    MaxSalary DECIMAL(10, 2)
+);
+
+CREATE TABLE Employees (
+    EmployeeID INT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    DateOfBirth DATE NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Phone VARCHAR(20),
+    HireDate DATE NOT NULL,
+    JobID INT,
+    DepartmentID INT,
+    Salary DECIMAL(10, 2),
+    FOREIGN KEY (JobID) REFERENCES JobPositions(JobID),
+    FOREIGN KEY (DepartmentID) REFERENCES Departments(DepartmentID)
+);
+
+INSERT INTO Departments VALUES (01,'Human Resources');
+INSERT INTO Departments VALUES (02,'Engineering');
+
+-- Inserting job positions
+INSERT INTO JobPositions  VALUES (11,'Software Engineer', 60000, 120000);
+INSERT INTO JobPositions  VALUES (22,'HR Manager', 50000, 90000);
+
+-- Inserting employees
+INSERT INTO Employees VALUES (21,'Janu', 'D', '1985-05-15', 'janu.d@example.com', '123-456-7890', '2015-06-01', 11, 01, 75000);
+
+INSERT INTO Employees VALUES (22,'Jane', 'Smith', '1990-07-20', 'jane.smith@example.com', '987-654-3210', '2018-08-15', 22, 02, 65000);
+
+
+select * from Employees;
+-- Join tables to get detailed employee information:
+
+
+SELECT e.FirstName, e.LastName, e.Email, d.DepartmentName, j.JobTitle, e.Salary
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID
+JOIN JobPositions j ON e.JobID = j.JobID;
+
+-- Get employees in a specific department:
+
+
+SELECT e.FirstName, e.LastName, e.Email, j.JobTitle, e.Salary
+FROM Employees e
+JOIN JobPositions j ON e.JobID = j.JobID
+WHERE e.DepartmentID = 1;
+-- Get employees with salaries within a specific range:
+
+SELECT e.FirstName, e.LastName, e.Email, d.DepartmentName, j.JobTitle, e.Salary
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID
+JOIN JobPositions j ON e.JobID = j.JobID
+WHERE e.Salary BETWEEN 60000 AND 100000;
